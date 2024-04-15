@@ -1,12 +1,25 @@
 import express from "express";
-import path from "path";
 const app = express();
+
+import path from "path";
+import fs, { write } from "fs";
+import { error } from "console";
 
 const __dirname = path.resolve();
 app.use(express.urlencoded());
 
+const fn = "userList.csv";
+app.use(express.urlencoded());
+
 app.post("/register", (req, res) => {
-  console.log(req.body);
+  const { email, password } = req.body;
+  const str = email + "," + password + "\n";
+
+  // write inside the file
+
+  fs.appendFile(fn, str, (error) => {
+    console.log(error);
+  });
   res.send("Data received");
 });
 
@@ -15,6 +28,24 @@ app.get("/register", (req, res) => {
   //   res.send(`<h1>Register Page</h1>
   //  `);
   res.sendFile(__dirname + "/public/register.html");
+});
+
+app.get("/login", (req, res) => {
+  //   res.send(`<h1>Register Page</h1>
+  //  `);
+  res.sendFile(__dirname + "/public/login.html");
+});
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  const loginDetails = email + "," + password;
+  fs.readFile(fn, (error, data) => {
+    const str = data.toString();
+    if (str.includes(loginDetails)) {
+      return res.send(`<h1 style="color:green">Login succesful!`);
+    }
+    res.send(`<h1 style="color:red"> Login failed </h1>`);
+  });
 });
 
 app.get("/", (req, res) => {
