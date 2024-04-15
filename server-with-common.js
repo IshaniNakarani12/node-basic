@@ -1,8 +1,7 @@
-import express from "express";
-import path from "path";
+const express = require("express");
 const app = express();
+const path = require("path");
 
-const __dirname = path.resolve();
 app.use(express.urlencoded());
 
 app.post("/register", (req, res) => {
